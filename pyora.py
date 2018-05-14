@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 # vim: tabstop=2 noexpandtab
-"""
-    Author: Danilo F. Chilene
-	Email:	bicofino at gmail dot com
-"""
 
 import argparse
 import cx_Oracle
@@ -384,8 +380,8 @@ class Checks(object):
     def tablespace_abs(self, name):
         """Get tablespace in use"""
         sql = '''SELECT df.tablespace_name "TABLESPACE", (df.totalspace - \
-              tu.totalusedspace) "FREEMB" from (select tablespace_name, \
-              sum(bytes) TotalSpace from dba_data_files group by tablespace_name) \
+              tu.totalusedspace) "FREEBY" from (select tablespace_name, \
+              sum(GREATEST(bytes,maxbytes)) TotalSpace from dba_data_files group by tablespace_name) \
               df ,(select sum(bytes) totalusedspace,tablespace_name from dba_segments \
               group by tablespace_name) tu WHERE tu.tablespace_name = \
               df.tablespace_name and df.tablespace_name = '{0}' '''.format(name)
@@ -396,7 +392,7 @@ class Checks(object):
 
     def show_tablespaces(self):
         """List tablespace names in a JSON like format for Zabbix use"""
-        sql = "SELECT tablespace_name FROM dba_tablespaces ORDER BY 1"
+        sql = "SELECT tablespace_name FROM dba_tablespaces where CONTENTS != 'UNDO' ORDER BY 1"
         self.cur.execute(sql)
         res = self.cur.fetchall()
         key = ['{#TABLESPACE}']
