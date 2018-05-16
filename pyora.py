@@ -416,6 +416,20 @@ class Checks(object):
             lst.append(d)
         print json.dumps({'data': lst})
 
+    def show_tablespaces_undo(self):
+        """List UNDO tablespace names in a JSON like
+        format for Zabbix use"""
+        sql = "SELECT TABLESPACE_NAME FROM DBA_TABLESPACES WHERE \
+              CONTENTS='UNDO'"
+        self.cur.execute(sql)
+        res = self.cur.fetchall()
+        key = ['{#TABLESPACE_UNDO}']
+        lst = []
+        for i in res:
+            d = dict(zip(key, i))
+            lst.append(d)
+        print json.dumps({'data': lst})
+
     def check_archive(self, archive):
         """List archive used"""
         sql = "select trunc((total_mb-free_mb)*100/(total_mb)) PCT from \
@@ -485,6 +499,16 @@ class Checks(object):
         """Query temporary tablespaces"""
         sql = "SELECT round(((TABLESPACE_SIZE-FREE_SPACE)/TABLESPACE_SIZE)*100,2) \
               PERCENTUAL FROM dba_temp_free_space where \
+              tablespace_name='{0}'".format(name)
+        self.cur.execute(sql)
+        res = self.cur.fetchall()
+        for i in res:
+            print i[0]
+
+    def tablespace_undo(self, name):
+        """Query UNDO tablespaces"""
+        sql = "SELECT round(((TABLESPACE_SIZE-FREE_SPACE)/TABLESPACE_SIZE)*100,2) \
+              PERCENTUAL FROM dba_undo_free_space where \
               tablespace_name='{0}'".format(name)
         self.cur.execute(sql)
         res = self.cur.fetchall()

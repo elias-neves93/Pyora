@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>3.0</version>
-    <date>2016-06-03T08:57:42Z</date>
+    <version>3.2</version>
+    <date>2018-05-16T20:13:44Z</date>
     <groups>
         <group>
             <name>Pyora</name>
@@ -38,6 +38,9 @@
                 </application>
                 <application>
                     <name>Temp Tablespaces</name>
+                </application>
+                <application>
+                    <name>UNDO Tablespaces</name>
                 </application>
             </applications>
             <items>
@@ -1979,14 +1982,20 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},asm_volume_use,{#ASMVOLUME}].last(0)}&gt;{$HIGH}</expression>
+                            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},asm_volume_use,{#ASMVOLUME}].last(0)}&gt;{$HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
                             <name>Oracle/ASM Volume {#ASMVOLUME} used &gt; {$HIGH} %</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
                             <url/>
                             <status>0</status>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
+                            <manual_close>0</manual_close>
                             <dependencies/>
+                            <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>
@@ -1998,7 +2007,7 @@
                     <snmp_community/>
                     <snmp_oid/>
                     <key>pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},show_tablespaces]</key>
-                    <delay>3600</delay>
+                    <delay>60</delay>
                     <status>0</status>
                     <allowed_hosts/>
                     <snmpv3_contextname/>
@@ -2123,14 +2132,20 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},tablespace,{#TABLESPACE}].last()}={$FS_P_USED_HIGH} and {Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},tablespace_abs,{#TABLESPACE}].last()}&lt;{$FS_FREE_LOW}</expression>
+                            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},tablespace,{#TABLESPACE}].last()}={$FS_P_USED_HIGH} and {Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},tablespace_abs,{#TABLESPACE}].last()}&lt;{$FS_FREE_LOW}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
                             <name>Oracle/Tablespace {#TABLESPACE} used on {$DATABASE} high</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
                             <url/>
                             <status>0</status>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
+                            <manual_close>0</manual_close>
                             <dependencies/>
+                            <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes>
@@ -2187,7 +2202,7 @@
                     <snmp_community/>
                     <snmp_oid/>
                     <key>pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},show_tablespaces_temp]</key>
-                    <delay>3600</delay>
+                    <delay>60</delay>
                     <status>0</status>
                     <allowed_hosts/>
                     <snmpv3_contextname/>
@@ -2268,14 +2283,126 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},tablespace_temp,{#TABLESPACE_TEMP}].last(0)}&gt;{$HIGH}</expression>
+                            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},tablespace_temp,{#TABLESPACE_TEMP}].last(0)}&gt;{$HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
                             <name>Oracle/Tablespace TEMP {#TABLESPACE_TEMP} used on {$DATABASE} &gt; {$HIGH} %</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
                             <url/>
                             <status>0</status>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
+                            <manual_close>0</manual_close>
                             <dependencies/>
+                            <tags/>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes/>
+                    <host_prototypes/>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Discovery Oracle undo tablespaces</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},show_tablespaces_undo]</key>
+                    <delay>60</delay>
+                    <status>0</status>
+                    <allowed_hosts/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <filter>
+                        <evaltype>0</evaltype>
+                        <formula/>
+                        <conditions>
+                            <condition>
+                                <macro>{#TABLESPACE_UNDO}</macro>
+                                <value/>
+                                <operator>8</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>30</lifetime>
+                    <description/>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Undo Tablespace Use on {#TABLESPACE_UNDO}</name>
+                            <type>0</type>
+                            <snmp_community/>
+                            <multiplier>0</multiplier>
+                            <snmp_oid/>
+                            <key>pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},tablespace_undo,{#TABLESPACE_UNDO}]</key>
+                            <delay>300</delay>
+                            <history>90</history>
+                            <trends>365</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units>%</units>
+                            <delta>0</delta>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <formula>1</formula>
+                            <delay_flex/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <data_type>0</data_type>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>UNDO Tablespaces</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <application_prototypes/>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},tablespace_undo,{#TABLESPACE_UNDO}].last(0)}&gt;{$HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Oracle/Tablespace UNDO {#TABLESPACE_UNDO} used on {$DATABASE} &gt; {$HIGH} %</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>
@@ -2371,6 +2498,7 @@
                     <host_prototypes/>
                 </discovery_rule>
             </discovery_rules>
+            <httptests/>
             <macros>
                 <macro>
                     <macro>{$FS_FREE_LOW}</macro>
@@ -2391,64 +2519,100 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},check_archive,{$ARCHIVE}].last(0)}&gt;90</expression>
+            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},check_archive,{$ARCHIVE}].last(0)}&gt;90</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
             <name>Oracle/Archive {$ARCHIVE} used on {$DATABASE} &gt; 90%</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>3</priority>
             <description>Database archive used is &gt; 90%</description>
             <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
+            <tags/>
         </trigger>
         <trigger>
-            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},check_active].regexp(ORA)}=1</expression>
+            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},check_active].regexp(ORA)}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
             <name>Oracle/Database {$DATABASE} is down or ORA error found</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>5</priority>
             <description>Contact DBA.</description>
             <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
+            <tags/>
         </trigger>
         <trigger>
-            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},check_active].nodata(700)}=1</expression>
+            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},check_active].nodata(700)}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
             <name>Oracle/Database {$DATABASE} is not responding</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>5</priority>
             <description>Contact DBA.</description>
             <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
+            <tags/>
         </trigger>
         <trigger>
-            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},fra_use].last(0)}&gt;90</expression>
+            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},fra_use].last(0)}&gt;90</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
             <name>Oracle/fra_use used on {$DATABASE} &gt; 90%</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>4</priority>
             <description>Fast Recovery Area usage &gt; 90%</description>
             <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
+            <tags/>
         </trigger>
         <trigger>
-            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},query_lock].last(0)}&gt;0</expression>
+            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},query_lock].last(0)}&gt;0</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
             <name>Oracle/Query Lock on {$DATABASE} &gt; 1</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>4</priority>
             <description/>
             <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
+            <tags/>
         </trigger>
         <trigger>
-            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$DATABASE},query_sessions].last(0)}&gt;250</expression>
+            <expression>{Pyora:pyora[{$USERNAME},{$PASSWORD},{$ADDRESS},{$PORT},{$DATABASE},query_sessions].last(0)}&gt;250</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
             <name>Oracle/Query Sessions on {$DATABASE} &gt; 250</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>4</priority>
             <description/>
             <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
+            <tags/>
         </trigger>
     </triggers>
     <graphs>
