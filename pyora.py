@@ -374,8 +374,11 @@ class Checks(object):
         ) where tablespace_name='{0}' order by 1'''.format(name)
         self.cur.execute(sql)
         res = self.cur.fetchall()
-        for i in res:
-            print i[1]
+        if len(res) == 0:
+            print 0
+        else:
+            for i in res:
+                print i[1]
 
     def tablespace_abs(self, name):
         """Get tablespace in use"""
@@ -387,8 +390,12 @@ class Checks(object):
               df.tablespace_name and df.tablespace_name = '{0}' '''.format(name)
         self.cur.execute(sql)
         res = self.cur.fetchall()
-        for i in res:
-            print i[1]
+        if len(res) == 0:
+            print 0
+        else:
+            for i in res:
+                print i[1]
+
 
     def show_tablespaces(self):
         """List tablespace names in a JSON like format for Zabbix use"""
